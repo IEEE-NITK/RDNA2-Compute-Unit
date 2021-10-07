@@ -19,8 +19,16 @@
 `define V_LSHLREV_B32			32'b0
 `define V_LSHRREV_B32 			32'b0
 `define V_MAC_{ F16,F32} 		32'b0
-`define V_MAX_{ F16, F32,I32,U32} 	32'b0
-`define V_MIN_{ F16, F32,I32,U32} 	32'b0
+`define V_MAX_F16               32'b0
+`define V_MAX_F32            	32'b0
+`define V_MAX_I32            	32'b0
+`define V_MAX_U32            	32'b0
+`define V_MIN_F16               32'b0
+`define V_MIN_F32               32'b0
+`define V_MIN_F16               32'b0
+`define V_MIN_F32               32'b0
+`define V_MIN_I32               32'b0
+`define V_MIN_U32               32'b0
 `define V_MUL_F16       		32'b0
 `define V_MUL_F32       		32'b0
 `define V_MUL_HI_I32_I24		32'b0
