@@ -25,8 +25,6 @@
 `define V_MAX_U32            	32'b0
 `define V_MIN_F16               32'b0
 `define V_MIN_F32               32'b0
-`define V_MIN_F16               32'b0
-`define V_MIN_F32               32'b0
 `define V_MIN_I32               32'b0
 `define V_MIN_U32               32'b0
 `define V_MUL_F16       		32'b0

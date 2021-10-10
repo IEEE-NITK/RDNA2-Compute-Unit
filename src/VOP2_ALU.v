@@ -142,6 +142,167 @@ input wire instruction[31:0]
                                 //Compute the minimum of two unsigned integers.
                                 //D.u32 = (S0.u32 < S1.u32 ? S0.u32 : S1.u32).
                             end
+            V_MAX_U32       :begin
+                                //Compute the maximum of two unsigned integers.
+                                //D.u32 = (S0.u32 >= S1.u32 ? S0.u32 : S1.u32).
+                            end
+            V_LSHRREV_B32   :begin
+                                //Logical shift right with shift count in the first operand.
+                                //D.u32 = S1.u32 >> S0[4:0].
+                            end
+            V_LSHLREV_B32   :begin
+                                //Logical shift left with shift count in the first operand.
+                                //D.u32 = S1.u32 << S0[4:0].
+                            end
+            V_AND_B32      :begin
+                                //Bitwise AND. Input and output modifiers not supported.
+                                //D.u32 = S0.u32 & S1.u32.
+                            end
+            V_OR_B32       :begin
+                                //Bitwise OR. Input and output modifiers not supported.
+                                //D.u32 = S0.u32 | S1.u32.
+                            end
+            V_XOR_B32      :begin
+                                //Bitwise XOR. Input and output modifiers not supported.
+                                //D.u32 = S0.u32 ^ S1.u32.
+                            end
+            V_XNOR_B32      :begin
+                                //Bitwise XNOR. Input and output modifiers not supported.
+                                //D.u32 = ~(S0.u32 ^ S1.u32).
+                            end
+            V_ADD_NC_U32    :begin
+                                //Add two unsigned integers. No carry-in or carry-out.
+                                //D.u32 = S0.u32 + S1.u32.
+                            end
+            V_SUB_NC_U32    :begin
+                                //Subtract the second unsigned integer from the first unsigned integer. No carry-in or carry-out.
+                                //D.u32 = S0.u32 - S1.u32.
+                            end
+            V_SUBREV_NC_U32 :begin
+                                //Subtract the first unsigned integer from the second unsigned integer. No carry-in or carry-out.
+                                //D.u32 = S1.u32 - S0.u32.
+                            end
+            V_ADD_CO_CI_U32 :begin
+                                //Add two unsigned integers and a carry-in from VCC. Store the
+                                //result and also save the carry-out to VCC. In VOP3 the VCC
+                                //destination may be an arbitrary SGPR-pair, and the VCC source
+                                //comes from the SGPR-pair at S2.u.
+                                //D.u32 = S0.u32 + S1.u32 + VCC;
+                                //VCC = S0.u32 + S1.u32 + VCC >= 0x100000000ULL ? 1 : 0.
+                            end
+            V_SUB_CO_CI_U32 :begin
+                                //Subtract the second unsigned integer from the first unsigned
+                                //integer and then subtract a carry-in from VCC. Store the result
+                                //and also save the carry-out to VCC. In VOP3 the VCC destination
+                                //may be an arbitrary SGPR-pair, and the VCC source comes from the
+                                //SGPR-pair at S2.u.
+                                //D.u32 = S0.u32 - S1.u32 - VCC;
+                                //VCC = S1.u32 + VCC > S0.u32 ? 1 : 0.
+                            end
+            V_FMAC_F32      :begin
+                                //Fused multiply-add of single-precision floats, accumulate with destination.
+                                //D.f32 = S0.f32 * S1.f32 + D.f32. // Fused operation
+                            end
+            V_FMAMK_F32     :begin
+                                //Multiply a single-precision float with a literal constant and
+                                //add a second single-precision float using fused multiply-add.
+                                //This opcode cannot use the VOP3 encoding and cannot use input/output modifiers.
+                                //D.f32 = S0.f32 * K.f32 + S1.f32. // K is a 32-bit literal constant.
+                            end
+            V_FMAAK_F32     :begin
+                                //Multiply two single-precision floats and add a literal constant
+                                //using fused multiply-add. This opcode cannot use the VOP3
+                                //encoding and cannot use input/output modifiers.
+                                //D.f32 = S0.f32 * S1.f32 + K.f32. // K is a 32-bit literal constant.
+                            end
+            V_ADD_F16       :begin
+                                //Add two FP16 values. 0.5ULP precision. Supports denormals,
+                                //round mode, exception flags and saturation.
+                                //D.f16_lo = S0.f16_lo + S1.f16_lo.
+                            end
+            V_SUB_F16       :begin
+                                //Subtract the second FP16 value from the first.
+                                //0.5ULP precision, Supports denormals, round mode, exception flags and saturation.
+                                //D.f16_lo = S0.f16_lo - S1.f16_lo.
+                            end
+            V_SUBREV_F16    :begin
+                                //Subtract the first FP16 value from the second.
+                                //0.5ULP precision. Supports denormals, round mode, exception flags and saturation
+                                //D.f16_lo = S1.f16_lo - S0.f16_lo
+                            end
+            V_MUL_F16       :begin
+                                //Multiply two FP16 values. 0.5ULP precision. Supports denormals, round mode, exception flags and saturation.
+                                //D.f16_lo = S0.f16_lo * S1.f16_lo.
+                            end
+            V_FMAC_F16      :begin
+                                //Fused multiply-add of FP16 values, accumulate with destination.
+                                //0.5ULP precision. Supports denormals, round mode, exception flags and saturation.
+                                //D.f16_lo = S0.f16_lo * S1.f16_lo + D.f16_lo.
+                            end
+            V_FMAMK_F16     :begin
+                                //Multiply a FP16 value with a literal constant and add a second
+                                //FP16 value using fused multiply-add. This opcode cannot use the
+                                //VOP3 encoding and cannot use input/output modifiers. Supports
+                                //round mode, exception flags, saturation.
+                                //D.f16_lo = S0.f16_lo * K.f16_lo + S1.f16_lo.
+                                // K is a 32-bit literal constant stored in the following literal DWORD.
+                            end
+            V_FMAAK_F16     :begin
+                                //Multiply two FP16 values and add a literal constant using fused
+                                //multiply-add. This opcode cannot use the VOP3 encoding and
+                                //cannot use input/output modifiers. Supports round mode, exception flags, saturation.
+                                //D.f16_lo = S0.f16_lo * S1.f16_lo + K.f16_lo.
+                                // K is a 32-bit literal constant stored in the following literal DWORD.
+                            end
+            V_MAX_F16       :begin
+                                //Maximum of two FP16 values. IEEE compliant. Supports
+                                //denormals, round mode, exception flags, saturation.
+                                //D.f16 = max(S0.f16,S1.f16);
+                                //if (IEEE_MODE && S0.f16 == sNaN)
+                                //  D.f16 = Quiet(S0.f16);
+                                //else if (IEEE_MODE && S1.f16 == sNaN)
+                                //  D.f16 = Quiet(S1.f16);
+                                //else if (S0.f16 == NaN)
+                                //  D.f16 = S1.f16;
+                                //else if (S1.f16 == NaN)
+                                //  D.f16 = S0.f16;
+                                //else if (S0.f16 == +0.0 && S1.f16 == -0.0)
+                                //  D.f16 = S0.f16;
+                                //else if (S0.f16 == -0.0 && S1.f16 == +0.0)
+                                //  D.f16 = S1.f16;
+                                //else if (IEEE_MODE)
+                                //  D.f16 = (S0.f16 >= S1.f16 ? S0.f16 : S1.f16);
+                                //else
+                                //  D.f16 = (S0.f16 > S1.f16 ? S0.f16 : S1.f16);
+                                //endif.
+                            end
+            V_MIN_F16       :begin
+                                //Minimum of two FP16 values. IEEE compliant. Supports
+                                //denormals, round mode, exception flags, saturation.
+                                //D.f16 = min(S0.f16,S1.f16);
+                                //if (IEEE_MODE && S0.f16 == sNaN)
+                                //  D.f16 = Quiet(S0.f16);
+                                //else if (IEEE_MODE && S1.f16 == sNaN)
+                                //  D.f16 = Quiet(S1.f16);
+                                //else if (S0.f16 == NaN)
+                                //  D.f16 = S1.f16;
+                                //else if (S1.f16 == NaN)
+                                //  D.f16 = S0.f16;
+                                //else if (S0.f16 == +0.0 && S1.f16 == -0.0)
+                                //  D.f16 = S1.f16;
+                                //else if (S0.f16 == -0.0 && S1.f16 == +0.0)
+                                //  D.f16 = S0.f16;
+                                //else // Note: there's no IEEE special case here like there is for V_MAX_F16.
+                                //  D.f16 = (S0.f16 < S1.f16 ? S0.f16 : S1.f16);
+                                //endif.
+                            end
+            V_LDEXP_F16     :begin
+                                //Multiply an FP16 value by an integral power of 2, compare with
+                                //the ldexp() function in C. Note that the S1 has a format of f16
+                                //since floating point literal constants are interpreted as 16 bit
+                                //value for this opcode.
+                                //D.f16 = S0.f16 * (2 ** S1.i16).
+                            end
         endcase
     end
     
