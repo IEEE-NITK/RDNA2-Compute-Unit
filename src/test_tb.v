@@ -1,17 +1,19 @@
 `timescale 1ns / 1ps
+`include "floats.vh"
 
 module test_tb;
-`include "Vdefines.sv"
 
-reg[31:0] test;
-wire[31:0] boop;
+reg[31:0] test2;
+wire[31:0] boop2;
 
-temp_test m(.test(test),
-            .boop(boop));
+temp_test m(.test(test2),
+            .boop(boop2));
                
 initial
 begin
-    test = pos_inf_32; 
+    test2 = 32'b0; 
+    #(10);
+    test2 = pos_inf_32;
 end
 
 endmodule

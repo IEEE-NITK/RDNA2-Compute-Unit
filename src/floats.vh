@@ -1,5 +1,5 @@
-`ifndef _Vdefines_sv
-`define _Vdefines_sv
+`ifndef _floats_vh
+`define _floats_vh
 
 //Vector instruction constants
 `define VINTERP       	 	6'b110010
