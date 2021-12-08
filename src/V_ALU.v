@@ -1,7 +1,3 @@
-`include "VOP2.v"
-`include "VOP1.v"
-`include "Vdefines.sv"
-`include "defines.v"
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: IEEE NITK
