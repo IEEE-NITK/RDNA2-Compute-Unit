@@ -7,7 +7,7 @@ wire[31:0] out;
 wire NaN_flag;
 wire overflow_flag;
 
-float_adder_32 test(.A(A), .B(B), .out(out));
+float_adder_32 test(.A(A), .B(B), .out(out), .NaN_flag(NaN_flag), .overflow_flag(overflow_flag));
 
 initial
 begin

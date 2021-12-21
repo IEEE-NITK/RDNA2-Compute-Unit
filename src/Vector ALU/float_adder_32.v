@@ -49,6 +49,7 @@ module float_adder_32(
     
 always @(*)
     begin
+        NaN_flag <= 1'b0;
         //checking for positive infinity
         if (A == pos_inf_32)
         begin
@@ -59,9 +60,11 @@ always @(*)
             end
             else if(B == neg_inf_32)
             begin
+                NaN_flag <= 1'b1;
                 sign_out = 1'bX;
                 exp_out = nan_exp_32; // inf + -inf case
-                NaN_flag = 1'b1;
+                out = {sign_out, exp_out, fraction_out};
+                $display("nan case");
             end
             else
             begin
@@ -78,9 +81,11 @@ always @(*)
             end
             else if (B == pos_inf_32)
             begin
+                NaN_flag <= 1'b1;
                 sign_out = 1'bX;
                 exp_out = nan_exp_32; // -inf + inf case
-                NaN_flag = 1'b1;
+                out = {sign_out, exp_out, fraction_out};
+                $display("nan case");
             end
             else
             begin
@@ -100,12 +105,17 @@ always @(*)
         // checking for Not a Number
         else if (exp_A == nan_exp_32)
         begin
+            NaN_flag <= 1'b1;
             exp_out = nan_exp_32;
+            out = {sign_out, exp_out, fraction_out};
             $display("in nan");
         end
         else if (exp_B == nan_exp_32)
         begin
+            NaN_flag <= 1'b1;
             exp_out = nan_exp_32;
+            out = {sign_out, exp_out, fraction_out};
+            $display("in nan");
         end
         //continuing with normal addition
         else
