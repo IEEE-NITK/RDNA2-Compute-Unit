@@ -20,7 +20,8 @@ module float_adder_32(
     // For output
     reg sign_out;
     reg[7:0] exp_out;
-    wire[22:0] fraction_out;
+    reg[22:0] fraction_out;
+    wire[23:0] significand_out;
     wire Cout;
     
     //difference of exponents
@@ -29,11 +30,15 @@ module float_adder_32(
     
     //mantissa or fraction to be shifted
     reg[22:0] frac_shift;
+    reg[23:0] significand_shift;
+    
     //mantissa or fraction that remains same
     reg[22:0] frac_non_shift;
+    reg[23:0] significand_non_shift;
     
     //mantissa or fraction after shifting
     wire[22:0] frac_shifted;
+    wire[23:0] significand_shifted;
     
     assign sign_A = A[31];
     assign exp_A = A[30:23];
@@ -44,8 +49,8 @@ module float_adder_32(
     assign fraction_B = B[22:0];
     
     subtractor_8b exp(.A(exp_A), .B(exp_B), .diff(diff_exp), .Borrow(Borrow));
-    RightShifter shift(.A(frac_shift), .amt(diff_exp), .out(frac_shifted));
-    CSA_23b adder(.A(frac_non_shift), .B(frac_shifted), .Sum(fraction_out), .Cout(Cout));
+    RightShifter shift(.A(significand_shift), .amt(diff_exp), .out(significand_shifted));
+    CSA_24b adder(.A(significand_non_shift), .B(significand_shifted), .Sum(significand_out), .Cout(Cout));
     
 always @(*)
     begin
@@ -126,15 +131,26 @@ always @(*)
             begin
                 //exp_B is bigger
                 frac_shift = fraction_A;
+                significand_shift = {1'b1, frac_shift};
+                
                 frac_non_shift = fraction_B;
+                significand_non_shift = {1'b1, significand_non_shift};
+                
+                //exponent and sign
+                exp_out = exp_B;
             end
             else if (Borrow == 1'b0)
             begin
                 //exp_A is bigger
                 frac_shift = fraction_B;
+                significand_shift = {1'b1, frac_shift};
+                
                 frac_non_shift = fraction_A;
+                significand_non_shift = {1'b1, significand_non_shift};
+                
+                exp_out = exp_A;
             end
-            sign_out = 1'b1;
+            fraction_out = significand_out[22:0];
             out = {sign_out, exp_out, fraction_out};
         end
     end
