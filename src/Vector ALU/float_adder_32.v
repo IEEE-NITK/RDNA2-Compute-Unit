@@ -38,7 +38,6 @@ module float_adder_32(
     reg[23:0] significand_non_shift;
     
     //mantissa or fraction after shifting
-    wire[22:0] frac_shifted;
     wire[23:0] significand_shifted;
     
     assign sign_A = A[31];
