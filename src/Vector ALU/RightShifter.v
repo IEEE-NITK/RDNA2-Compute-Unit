@@ -7,7 +7,7 @@ module RightShifter(
     );
     
 
-wire[22:0] temp[7:0];
+wire[23:0] temp[7:0];
 
 genvar i,j;
 generate

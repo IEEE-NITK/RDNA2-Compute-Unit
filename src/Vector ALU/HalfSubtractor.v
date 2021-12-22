@@ -1,13 +1,16 @@
 `timescale 1ns / 1ps
 
 module HalfSubtractor(
-    input A,
-    input B,
-    output D,
-    output Bout
+    input wire A,
+    input wire B,
+    output reg D,
+    output reg Bout
     );
 	 
-xor(D,A,B);
-and(Bout,~A,B);
+always @(*)
+begin
+    D <= A^B;
+    Bout <= (~A) & B;
+end
 
 endmodule
