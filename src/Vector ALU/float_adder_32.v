@@ -49,7 +49,7 @@ module float_adder_32(
     assign fraction_B = B[22:0];
     
     subtractor_8b sub(.A(exp_A), .B(exp_B), .diff(diff_exp), .Borrow(Borrow));
-    RightShifter shift(.A(significand_shift), .amt(diff_amt), .out(significand_shifted));
+    RightShiftv2 shift(.A(significand_shift), .amt(diff_amt), .out(significand_shifted));
     CSA_24b adder(.A(significand_non_shift), .B(significand_shifted), .Sum(significand_out), .Cout(Cout));
     
 always @(*)
