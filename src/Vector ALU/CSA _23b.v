@@ -28,7 +28,7 @@ generate
         fulladder bit1(.A(temp_sum1[i]), .B(temp_c1[i]), .Cin(temp_c2[(i-1)]), .Sum(Sum[i]), .Cout(temp_c2[i]));
     end
     
-    fulladder bit32(.A(1'b0), .B(temp_c1[24]), .Cin(temp_c2[23]), .Sum(Cout), .Cout(temp_c2[24]));
+    fulladder bit24(.A(1'b0), .B(temp_c1[24]), .Cin(temp_c2[23]), .Sum(Cout), .Cout(temp_c2[24]));
 endgenerate
    
 endmodule

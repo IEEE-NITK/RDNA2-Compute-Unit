@@ -9,35 +9,43 @@ module float_adder_32(
     output reg overflow_flag
     );
 `include "floats.vh"    
-    // For A
+    // For A --------------------------------------------------------------------------------------------------------------------------------------
     wire sign_A;
     wire[7:0] exp_A;
     wire[22:0] fraction_A;
-    // For B
+    reg hidden_bit_A;
+    
+    // For B --------------------------------------------------------------------------------------------------------------------------------------
     wire sign_B;
     wire[7:0] exp_B;
     wire[22:0] fraction_B;
-    // For output
+    reg hidden_bit_B;
+    
+    // For output --------------------------------------------------------------------------------------------------------------------------------------
     reg sign_out;
     reg[7:0] exp_out;
     reg[22:0] fraction_out;
     wire[23:0] significand_out;
     wire Cout;
     
-    //difference of exponents
+    //normalized outputs --------------------------------------------------------------------------------------------------------------------------------------
+    wire[23:0] norm_significand;
+    wire[7:0] norm_exp;
+    
+    //difference of exponents --------------------------------------------------------------------------------------------------------------------------------------
     wire[7:0] diff_exp;
     wire Borrow;
     reg[7:0] diff_amt;
     
-    //mantissa or fraction to be shifted
+    //mantissa or fraction to be shifted --------------------------------------------------------------------------------------------------------------------------------------
     reg[22:0] frac_shift;
     reg[23:0] significand_shift;
     
-    //mantissa or fraction that remains same
+    //mantissa or fraction that remains same --------------------------------------------------------------------------------------------------------------------------------------
     reg[22:0] frac_non_shift;
     reg[23:0] significand_non_shift;
     
-    //mantissa or fraction after shifting
+    //mantissa or fraction after shifting --------------------------------------------------------------------------------------------------------------------------------------
     wire[23:0] significand_shifted;
     
     assign sign_A = A[31];
@@ -49,13 +57,34 @@ module float_adder_32(
     assign fraction_B = B[22:0];
     
     subtractor_8b sub(.A(exp_A), .B(exp_B), .diff(diff_exp), .Borrow(Borrow));
-    RightShiftv2 shift(.A(significand_shift), .amt(diff_amt), .out(significand_shifted));
+    RightShift shift(.A(significand_shift), .amt(diff_amt), .out(significand_shifted));
     CSA_24b adder(.A(significand_non_shift), .B(significand_shifted), .Sum(significand_out), .Cout(Cout));
+    normalizer norm(.significand(significand_out), .exp(exp_out), .cout(Cout), .norm_sig(norm_significand), .norm_exp(norm_exp));
     
 always @(*)
     begin
+    
+        // checking denormal cases --------------------------------------------------------------------------------------------------------
+        if (exp_A == denorm_32)
+        begin
+            hidden_bit_A <= 1'b0;        
+        end
+        else
+        begin
+            hidden_bit_A <= 1'b1;
+        end
+        
+        if (exp_B == denorm_32)
+        begin
+            hidden_bit_B <= 1'b0;
+        end
+        else
+        begin
+            hidden_bit_B <= 1'b1;
+        end
+    
         NaN_flag <= 1'b0;
-        //checking for positive infinity
+        //checking for positive infinity --------------------------------------------------------------------------------------------------------
         if (A == pos_inf_32)
         begin
         $display("in pos inf");
@@ -76,7 +105,7 @@ always @(*)
                 out <= pos_inf_32;   // inf + number case
             end
         end
-        //checking for negative infinity
+        //checking for negative infinity --------------------------------------------------------------------------------------------------------
         else if (A == neg_inf_32)
         begin
         $display("in neg inf");
@@ -97,6 +126,7 @@ always @(*)
                 out <= neg_inf_32;   // -inf + number case
             end
         end
+         // --------------------------------------------------------------------------------------------------------
         else if(B == pos_inf_32)
         begin
         //num + inf case
@@ -107,7 +137,7 @@ always @(*)
         //num - inf case
             out <= neg_inf_32;
         end
-        // checking for Not a Number
+        // checking for Not a Number --------------------------------------------------------------------------------------------------------
         else if (exp_A == nan_exp_32)
         begin
             NaN_flag <= 1'b1;
@@ -122,7 +152,7 @@ always @(*)
             out <= {sign_out, exp_out, fraction_out};
             $display("in nan");
         end
-        //continuing with normal addition
+        //continuing with addition
         else
         begin
         $display("in normal");
@@ -136,10 +166,10 @@ always @(*)
                 $display("exp_A = %d, exp_B = %d", exp_A, exp_B);
                 //exp_B is bigger
                 frac_shift <= fraction_A;
-                significand_shift <= {1'b1, frac_shift};
+                significand_shift <= {hidden_bit_A, frac_shift};
                 
                 //frac_non_shift = fraction_B;
-                significand_non_shift <= {1'b1, significand_non_shift};
+                significand_non_shift <= { hidden_bit_B, significand_non_shift};
                 
                 //exponent and sign
                 exp_out <= exp_B;
@@ -151,15 +181,15 @@ always @(*)
                 $display("B shifted, diff_exp = %d, diff_amt = %d", diff_exp, diff_amt);
                 $display("exp_A = %d, exp_B = %d", exp_A, exp_B);
                 frac_shift <= fraction_B;
-                significand_shift <= {1'b1, frac_shift};
+                significand_shift <= { hidden_bit_B, frac_shift};
                 
                 frac_non_shift <= fraction_A;
-                significand_non_shift <= {1'b1, frac_non_shift};
+                significand_non_shift <= { hidden_bit_A, frac_non_shift};
                 
                 exp_out <= exp_A;
             end
-            fraction_out <= significand_out[22:0];
-            out <= {sign_out, exp_out, fraction_out};
+            fraction_out <= norm_significand[22:0];
+            out <= {sign_out, norm_exp, fraction_out};
         end
     end
     
