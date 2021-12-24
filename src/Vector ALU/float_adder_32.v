@@ -152,7 +152,7 @@ always @(*)
             out <= {sign_out, exp_out, fraction_out};
             $display("in nan");
         end
-        //continuing with addition
+        //continuing with addition --------------------------------------------------------------------------------------------------------
         else
         begin
         $display("in normal");
@@ -188,6 +188,12 @@ always @(*)
                 
                 exp_out <= exp_A;
             end
+            
+            if (sign_A == sign_B)
+            begin
+                sign_out <= sign_A;
+            end
+            
             fraction_out <= norm_significand[22:0];
             out <= {sign_out, norm_exp, fraction_out};
         end
