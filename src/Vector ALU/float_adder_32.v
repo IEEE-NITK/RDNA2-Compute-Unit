@@ -1,6 +1,13 @@
 `timescale 1ns / 1ps
 
 
+function [23:0] complement2 (   input hidden_bit,
+                                input [22:0] fraction);
+    begin
+        complement2 = ~{hidden_bit, fraction} + 1;
+    end
+endfunction
+
 module float_adder_32(
     input wire[31:0] A,
     input wire[31:0] B,
@@ -156,6 +163,16 @@ always @(*)
         else
         begin
         $display("in normal");
+// diff sign            
+//            if (sign_A != sign_B)
+//            begin
+//                if (sign_A == 1)
+//                begin
+//                    significand_shift = complement2(hidden_bit_A, fraction_A);
+//                end
+//            end
+        
+        
             //determinning output exponent and calculatiing exponent difference
             if (Borrow == 1'b1)
             begin
