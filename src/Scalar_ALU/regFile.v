@@ -27,7 +27,7 @@ module regFile(
     input [63:0] wv,
     input clock,
     input en_w,
-    inptu en_64,
+    input en_64,
     input VCCZ_in,
     input EXECZ_in,
     input  SCC_in,
