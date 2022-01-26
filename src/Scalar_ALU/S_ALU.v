@@ -52,10 +52,11 @@ module S_ALU(
     
     //select lines s0 and s1 for reading reading values at r0 and r1.
     //select line w0 for writing value(wv) in the register file.
-    wire [7:0]s0, s1, w0;
-    wire [63:0] wv, r0, r1, EXEC_in, EXEC_out;
-    wire en_w, VCCZ_in, VCCZ_out, en_64, SCC_in, SCC_out, EXECZ_in, EXECZ_out;
-    
+    reg [7:0]s0, s1, w0;
+    reg [63:0] wv,  EXEC_in;
+    reg en_w, VCCZ_in, en_64, SCC_in,  EXECZ_in;
+    wire  [63:0] EXEC_out, r0, r1;
+    wire  VCCZ_out, SCC_out, EXECZ_out;
     regFile regFile(.s0(s0), .s1(s1),
                               .w0(w0), .wv(wv),
                                .clock(clock), .en_w(en_w),
