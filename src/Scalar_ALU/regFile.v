@@ -32,26 +32,32 @@ module regFile(
     input EXECZ_in,
     input  SCC_in,
     input [63:0] EXEC_in,
-    output reg [63:0] EXEC_out,
-    output reg  [63:0] r0,
-    output reg[63:0] r1,
-    output reg VCCZ_out,
-    output reg EXECZ_out,
-    output reg SCC_out
+    output [63:0] EXEC_out,
+    output [63:0] r0,
+    output [63:0] r1,
+    output VCCZ_out,
+    output EXECZ_out,
+    output SCC_out
     );
     reg [31:0] register [255:0];
-    always @ (s0 or s1 or w0 or wv or en_64 or VCCZ_in  or EXEC_in  or SCC_in or EXECZ_in)
+    
+    assign r0 = (!s0==8'hFF) ? {register[s0 +1], register[s0]}: {32'bx, register[s0]};
+    assign r1 = (!s1==8'hFF)? {register[s1 + 1]+register[s1]}: {32'bx, register[s0]};
+    assign VCCZ_out = register[8'hfb][0];
+    assign SCC_out = register[8'hfc][0];
+    assign EXECZ_out = register[8'hfd][0];
+    assign EXEC_out = {register[8'h7f], register[8'h7e]};
+    
+    //assigning constant values 
+    // positive ingtegers
+  
+  
+    //negative integers
+    
+    
+    //writing data to registers      
+    always @ (posedge clock)
     begin
-        if(!s0==8'hFF) begin
-        r0 <= {register[s0 +1], register[s0]};
-        end else begin
-        r0 <= {32'bx, register[s0]};
-        end
-        if(!s1==8'hFF) begin
-        r1 <= {register[s1 + 1]+register[s1]};
-        end else begin
-        r0 <= {32'bx, register[s0]};
-        end
         //writing write value to register except for read only values.
         if(en_w && (!(w0==8'h7d || (w0>=8'h80&&w0<=8'he8)|| (w0>=8'hF0 && w0<=8'hf8)))) begin
             if(en_64) begin
@@ -63,14 +69,13 @@ module regFile(
         end
         
        //reading and writing VCCZ, SCC, and EXECZ.
-       VCCZ_out <= register[8'hfb][0];
+       //VCC
        register[8'hfb] <= {30'b0, VCCZ_in};
-       SCC_out <= register[8'hfc][0];
+       //SCC
        register[8'hfc] <= {30'b0, SCC_in};
-       EXECZ_out <= register[8'hfd][0];
+       //EXECZ
        register[8'hfd] <= {30'b0, EXECZ_in};
-       //handling exec
-       EXEC_out <= {register[8'h7f], register[8'h7e]};
+       //exec
        if(EXECZ_in) register[8'h7f] <=EXEC_in; 
     end
 endmodule
