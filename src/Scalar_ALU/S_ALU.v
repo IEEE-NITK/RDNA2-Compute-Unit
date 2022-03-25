@@ -81,12 +81,15 @@ module S_ALU(
     .EXEC_out(EXEC_out 
     ));
     
-    wire [7:0] PC_IN, PC_OUT;
-    wire SET_PC;
+    reg [7:0] PC_IN;
+    wire [7:0] PC_OUT;
+    reg SET_PC;
+    
     Program_Counter PC(
     .PC_IN(PC_IN),
     .PC_OUT(PC_OUT),
-    .SET_PC(SET_PC));
+    .SET_PC(SET_PC),
+    .clock(clock));
     
     always@(posedge clock)
     begin
