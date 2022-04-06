@@ -1,6 +1,6 @@
 `timescale 1ns/100ps
 
-module fpu_add #(
+module fpu_add_32 #(
 	parameter BIT_WIDTH					= 32,			// 32, 64, 128
 	// Don't touch 
 	parameter EXP_WIDTH					= ( BIT_WIDTH == 32 ) ?  8 : ( BIT_WIDTH == 64 ) ? 11 :  15 ,  
@@ -154,7 +154,7 @@ module fpu_add #(
 	// 2. Then we find the exponent difference of those two numbers in step 1
 	wire [EXP_WIDTH-1:0] temp_expDiff; // Number of required shifts
 	// Also temp_expDiff shows the difference between the exponents.
-	mux_2to1 #(EXP_WIDTH)mux3(expDiff[EXP_WIDTH-1:0], (~expDiff[EXP_WIDTH-1:0] + 1'b1), ~expDiff[EXP_WIDTH], temp_expDiff); 
+	mux_2to1_32 #(EXP_WIDTH)mux3(expDiff[EXP_WIDTH-1:0], (~expDiff[EXP_WIDTH-1:0] + 1'b1), ~expDiff[EXP_WIDTH], temp_expDiff); 
 	
 
 	// 3. Shifting
@@ -299,10 +299,10 @@ module fpu_add #(
 
 	wire select;
 	assign select = ((temp_expDiff == {(EXP_WIDTH){1'b0}}) &&(~(sigDiff[SGN_WIDTH-1])) && (i_operation))  ? 1 : 0;
-	mux_2to1 #(SGN_WIDTH + 4)mux4({2'b0,sigDiff[SGN_WIDTH-2:0],3'b0}, temp_sum, select, temp2_sum);
+	mux_2to1_32 #(SGN_WIDTH + 4)mux4({2'b0,sigDiff[SGN_WIDTH-2:0],3'b0}, temp_sum, select, temp2_sum);
 
 	wire [EXP_WIDTH-1:0] cnt_temp; // counting leading zero
-	lzd #(SGN_WIDTH + 4,EXP_WIDTH)lzd0 (temp2_sum,cnt_temp);
+	lzd_32 #(SGN_WIDTH + 4,EXP_WIDTH)lzd0 (temp2_sum,cnt_temp);
 
 	// case1) cnt_temp = 0, in this case, one bit right shift is needed
 	// case2) cnt_temp = 1, in this case, no shift is needed
@@ -320,7 +320,7 @@ module fpu_add #(
 	assign normalization = (cnt_temp == 0) ? 1'b1 : 1'b0; 
 
 	// rl shifter
-	rl_shifter #(SGN_WIDTH + 4,EXP_WIDTH) rl_shift(temp2_sum,dir,cnt,temp3_out);
+	rl_shifter_32 #(SGN_WIDTH + 4,EXP_WIDTH) rl_shift(temp2_sum,dir,cnt,temp3_out);
 	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// 						Rounding					//////////////////////////////////////////
@@ -526,7 +526,7 @@ endmodule
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-module mux_2to1(a, b, sel, out);
+module mux_2to1_32(a, b, sel, out);
 	parameter W = 24;
 	input [W-1:0] a;
 	input [W-1:0] b;
@@ -542,7 +542,7 @@ module mux_2to1(a, b, sel, out);
 	end
 endmodule
 
-module lzd(a, cnt);
+module lzd_32(a, cnt);
 	parameter W = 28;
 	parameter Z = 8;
 	input [W-1:0] a;
@@ -561,7 +561,7 @@ module lzd(a, cnt);
 	end
 endmodule
 
-module rl_shifter(a, dir, s, out);
+module rl_shifter_32(a, dir, s, out);
 	parameter W = 28;
 	parameter Z = 8;
 	input [W-1:0] a;

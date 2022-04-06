@@ -1,7 +1,7 @@
 
 `timescale 1ns/100ps
 
-module fpu_mul #(
+module fpu_mul_32 #(
 	parameter BIT_WIDTH					= 32,			// 32, 64, 128
 	// Don't touch 
 	parameter EXP_WIDTH					= ( BIT_WIDTH == 32 ) ?  8 : ( BIT_WIDTH == 64 ) ? 11 :  15 ,  

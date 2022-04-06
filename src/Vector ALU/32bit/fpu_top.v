@@ -1,7 +1,7 @@
 
 `timescale 1ns/100ps
 
-module fpu_top #(
+module fpu_top_32 #(
 	parameter BIT_WIDTH					= 32			// 32, 64, 128
 )(  
 	input								clk,
@@ -29,7 +29,7 @@ module fpu_top #(
 	wire								mul_inexact	;
 
 
-	fpu_add #(BIT_WIDTH) A_fpu_add(  
+	fpu_add_32 #(BIT_WIDTH) A_fpu_add(  
 		.i_mode		( i_mode		),
 		.i_operation( i_operation[0]),
 		.i_inputA   ( i_inputA      ),
@@ -38,7 +38,7 @@ module fpu_top #(
 		.o_inexact	( add_inexact	)
 	);
 	
-	fpu_mul #(BIT_WIDTH) A_fpu_mul(  
+	fpu_mul_32 #(BIT_WIDTH) A_fpu_mul(  
 		.i_mode		( i_mode		),
 		.i_inputA   ( i_inputA      ),
 		.i_inputB   ( i_inputB      ),
@@ -46,7 +46,7 @@ module fpu_top #(
 		.o_inexact	( mul_inexact	)
 	);
 	
-	fpu_exception #(BIT_WIDTH) A_fpu_exception (  
+	fpu_exception_32 #(BIT_WIDTH) A_fpu_exception (  
 		.clk			( clk			),	    
 		.rst_n      	( rst_n         ),
 		.i_valid    	( i_valid       ),
