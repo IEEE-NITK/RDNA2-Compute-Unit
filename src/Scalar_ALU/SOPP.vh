@@ -1,0 +1,43 @@
+@ -0,0 +1,43 @@
+`ifndef _SOPP_vh
+`define _SOPP_vh
+
+//opcodes for SOPP
+localparam S_NOP =8'b00000000
+localparam  S_ENDPGM  =8'b00000001
+localparam  S_BRANCH =8'b00000010
+localparam S_WAKEUP =8'b00000011
+localparam S_CBRANCH_SCC0 =8'b00000100
+localparam S_CBRANCH_SCC1 =8'b00000101
+localparam S_CBRANCH_VCCZ =8'b00000110
+localparam S_CBRANCH_VCCNZ =8'b00000111
+localparam S_CBRANCH_EXECZ =8'b00001000
+localparam S_CBRANCH_EXECNZ =8'b00001001
+localparam S_BARRIER =8'b00001010
+localparam S_SETKILL  =8'b00001011
+localparam	S_WAITCNT =8'b00001110
+localparam S_SETHALT =8'b00001101
+localparam S_SLEEP 	=8'b00001110
+localparam S_SETPRIO	=8'b00001111
+localparam S_SENDMSG =8'b00100000
+localparam S_SENDMSGHALT =8'b00010001
+localparam S_TRAP =8'b00010010	
+localparam S_ICACHE_INV =8'b00010011
+localparam  S_INCPERFLEVEL =8'b00010100	
+localparam S_DECPERFLEVEL =8'b00010101
+localparam S_TTRACEDATA =8'b00001110
+localparam S_CBRANCH_CDBGSYS =8'b00010111
+localparam S_CBRANCH_CDBGUSER =8'b00011000
+localparam S_CBRANCH_CDBGSYS_OR_USER =8'b00011001
+localparam S_CBRANCH_CDBGSYS_AND_USER =8'b00011010
+localparamS_ENDPGM_SAVED =8'b00011011
+localparam S_ENDPGM_ORDERED_PS_DONE =8'b00011110
+localparam S_CODE_END =8'b00011111
+localparam S_INST_PREFETCH =8'b00100000
+localparam S_CLAUSE =8'b00100001
+localparam S_ROUND_MODE =8'b00100100	
+localparam S_DENORM_MODE =8'b00100101
+localparam S_TTRACEDATA_IMM =8'b00101000
++
++
+`endif
