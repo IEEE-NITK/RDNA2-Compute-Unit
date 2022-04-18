@@ -1,13 +1,3 @@
----
-layout: post
-title: 'RDNA2 Based Compute Unit'
-description: 'This project aims to implement the scalar ALU in compliance with RDNA2 ISA.  The RDNA2 ISA is found in the commercial GPUs of AMD which comprises of the Radeon RX6000 series of GPUs. The implemented ALU can run all the supported instruction types as documented in the RDNA2 ISA.'
-categories: diode
-thumbnail: 'thumbnail.jpg'
-year: 2022
-gmeet: 'https://meet.google.com/stj-pqqk-qum'
----
-
 ### Mentors
 
 -KRUTI DEEPAN PANDA
